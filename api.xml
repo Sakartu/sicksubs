@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<bierdopje>
+<response>
+	<result>
+		<call>GetShowById</call>
+		<params>integer ShowId</params>
+		<description>Returns an XML response with information about the show with showid ShowId, or false if the show is not found</description>
+
+	</result>
+	<result>
+		<call>GetShowByName</call>
+		<params>string ShowName (,optional boolean linkname; default: false)</params>
+		<description>Returns an XML response with information about the show with showname ShowName, or false if the show is not found. You can use the &amp;quot;linkname&amp;quot; the site uses (/shows/castle-2009)</description>
+
+	</result>
+	<result>
+		<call>GetShowByTVDBID</call>
+		<params>integer ShowId</params>
+		<description>Returns an XML response with information about the show with TVDB showid ShowId, or false if the show is not found</description>
+
+	</result>
+	<result>
+		<call>FindShowByName</call>
+		<params>string name</params>
+		<description>Returns an XML response with information about the shows found with the showname partly matching name, or false if the show is not found</description>
+
+	</result>
+	<result>
+		<call>GetEpisodesForSeason</call>
+		<params>integer showid, integer season</params>
+		<description>Returns an XML Response with information about all episodes for the selected season of the show, or false if the showid is invalid</description>
+
+	</result>
+	<result>
+		<call>GetSubsForSeason</call>
+		<params>integer showid, integer season, string language (nl/en; default: nl)</params>
+		<description>Returns an XML Response with all available subs for the episodes for the selected season of the show, or false if the showid is invalid</description>
+
+	</result>
+	<result>
+		<call>GetAllEpisodesForShow</call>
+		<params>integer showid</params>
+		<description>Returns an XML Response with information about all episodes for the show, or false if the showid is invalid</description>
+
+	</result>
+	<result>
+		<call>GetEpisodeById</call>
+		<params>integer EpisodeId</params>
+		<description>Returns an XML response with information about the episode with episodeid EpisodeId, or false if the episode is not found</description>
+
+	</result>
+	<result>
+		<call>GetAllSubsForEpisode</call>
+		<params>integer episodeid, string language(nl/en)</params>
+		<description>Returns an XML Response with information about all subtitles for a episode, or false if the episodeid is invalid</description>
+
+	</result>
+	<result>
+		<call>GetAllSubsFor</call>
+		<params>integer showid, integer season, integer episode, string language(nl/en), (optional: istvdbid true/false)</params>
+		<description>Returns an XML Response with information about all subtitles for a given episode, or false if the episodeid is invalid</description>
+
+	</result>
+</response>
+</bierdopje>
