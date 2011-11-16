@@ -1,19 +1,33 @@
 #!/usr/bin/python
-from rss.RSS import TrackingChannel
 import os
 import sys
 import pickle
 import urllib2
+import bierdopje
+import nameparser
 
-FEED = u'http://feeds.bierdopje.com/bierdopje/subs/english'
-QUEUE_FILE = u'/tmp/sabsub_queue'
-API_KEY = u'6935AC4D8CF45C7A'
+#***********************************<CONFIG>************************************
+# These are parameters that you may want to configure, although the defaults are
+# quite sane 
+
+# location where sabsub should store the queue file
+QUEUE_FILE = u'/tmp/sabsub_queue' 
+
+# the language of the downloaded subs, can be nl or en
+SUB_LANG = 'en'
+
+#***********************************</CONFIG>***********************************
+
 
 class Queueitem(object):
-    def __init__(self, job_name, interm_loc):
+    def __init__(self, job_name, interm_loc, final_loc=None, tvdbid=None):
         self.job_name = job_name
         self.interm_loc = interm_loc
-        self.final_loc = None
+        self.final_loc = final_loc
+        self.tvdbid = tvdbid
+ 
+    def __repr__(self):
+        return str(self.tvdbid) + ":" + str(self.job_name)
 
 def sabnzbd_run():
     '''
@@ -37,7 +51,7 @@ def sabnzbd_run():
     job_name = sys.argv[3]
 
     jobs = read_queue()
-    jobs.append(Queueitem(job_name, interm_loc))
+    jobs.add(Queueitem(job_name, interm_loc))
     write_queue(jobs)
 
 def sickbeard_run():
@@ -55,31 +69,38 @@ def sickbeard_run():
     # 6 episode air date
     final_loc = sys.argv[1]
     interm_loc = sys.argv[2]
+    tvdbid = sys.argv[3]
 
     jobs = read_queue()
     for job in jobs:
         if isinstance(job, Queueitem) and job.interm_loc == interm_loc:
             job.final_loc = final_loc
-    write_queue(jobs)
+            job.tvdbid = tvdbid
+            write_queue(jobs)
+            return
 
-def cron_run():
+def cron_run(jobs=None):
     '''
     This function will be called when the script is executed by cron. This will
     read the jobs and try to find sub downloads for each of them
     '''
-    jobs = read_queue()
+    if not jobs:
+        jobs = read_queue()
 
-    c = TrackingChannel()
-    c.parse(FEED)
-    for k in c.keys():
-        subname = str(k)[str(k).rfind('/') + 1:]
-        with open(QUEUE_FILE) as f:
-            jobs = pickle.load(f)
-            for (name, loc) in jobs.items():
-                if name in subname:
-                    import pprint
-                    pprint.pprint(dict(c)[k])
-                    #download(k, loc)
+    to_download = set()
+    for job in jobs:
+        sid = bierdopje.get_show_id(job.tvdbid)
+        (season, ep) = nameparser.get_ep_details(job.job_name)
+        if sid and season and ep:
+            sublinks = bierdopje.get_subs(sid, SUB_LANG, season, ep)
+            job.sub = nameparser.find_link(job, sublinks)
+            if job.sub:
+                to_download.add(job)
+
+    for job in to_download:
+        download(job.sub, job.final_loc)
+    write_queue(set(jobs) - to_download)
+
 def read_queue():
     '''
     This helper function opens the queue file and checks whether the type is
@@ -88,8 +109,8 @@ def read_queue():
     with open(QUEUE_FILE, 'rb') as f:
         jobs = pickle.load(f)
 
-    if type(jobs) != type([]):
-        jobs = []
+    if type(jobs) != type(set()):
+        jobs = set()
 
     return jobs
 
@@ -105,10 +126,14 @@ def download(url, loc):
     This helper method downloads a sub to a filed named as the episode, but with
     a subtitle extension
     '''
-    subext = os.path.splitext(url)[1]
-    baseloc = os.path.splitext(loc)[0]
+    baseloc = os.path.splitext(os.path.expanduser(loc))[0]
+    resp = urllib2.urlopen(url)
+
+    if 'content-disposition' in resp.info().dict:
+        subext = os.path.splitext(resp.info().dict['content-disposition'])[1]
+    else:
+        subext = '.srt'
     with open(baseloc + subext, 'w+') as sub:
-        resp = urllib2.urlopen(url)
         sub.write(resp.read())
 
 if __name__ == '__main__':
@@ -117,5 +142,7 @@ if __name__ == '__main__':
     elif len(sys.argv) == 7:
         sickbeard_run()
     else:
-        cron_run()
+        t = Queueitem('Terra.Nova.S01E06.HDTV.XviD-LOL', 'bla', '/media/media/Series/Terra Nova/Season 01/Terra.Nova.S01E06.Nightfall.avi', tvdbid='164091')
+        #t = Queueitem('Terra Nova', 'bla', 'bla')
+        cron_run([t])
 
