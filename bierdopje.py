@@ -15,7 +15,10 @@ def get_show_id(sid):
     '''
     url = SID_BY_TVDBID.format(sid=urllib.quote(sid))
     data = get_content(url, 'showid')
-    return data[0].firstChild.data
+    if data:
+        return data[0].firstChild.data
+    else:
+        return None
 
 def get_subs(showid, lang, season, ep):
     url = SUBS_BY_EP.format(sid=showid, s=season, e=ep, lang=lang)
