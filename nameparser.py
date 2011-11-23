@@ -10,7 +10,7 @@ def get_ep_details(line):
             except:
                 return (None, None)
 
-def find_link(job, sublinks):
+def find_link(name, sublinks):
     for link in sublinks:
-        if job.job_name in link:
+        if name in link:
             return link
