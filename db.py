@@ -2,6 +2,7 @@ import os
 import sys
 import sqlite3
 import bierdopje
+from ep import Ep
 
 def initialize(path):
     '''
@@ -67,12 +68,12 @@ def get_all_eps(conn):
     with conn:
         c = conn.cursor()
         c.execute(u'''SELECT * FROM eps''')
-        return c.fetchall()
+        return map(Ep(conn).from_row, c.fetchall())
 
 def remove_downloaded(conn, downloaded):
     with conn:
         c = conn.cursor()
-        tvdbids = [(x[2],) for x in downloaded.values()]
+        tvdbids = [(x.tvdbid,) for x in downloaded]
         c.executemany(u'''DELETE FROM eps WHERE tvdbid = ?''', tvdbids)
 
 
