@@ -14,13 +14,13 @@ works as follows:
 
 1. When an ep is downloaded by SABnzbd, SabSub will be notified through the
    SABnzbd post-processing hook. It adds information about the downloaded show
-   to the queue-file, namely the job name and the intermediate location of the
+   to the database, namely the job name and the intermediate location of the
    episode.
 2. When Sickbeard is done processing the downloaded ep, SabSub will be notified
-   again to add some more data to the queue-file, namely the final destination
+   again to add some more data to the database, namely the final destination
    and name of the ep.
 3. Once every x hours (depending on how the crontab is setup) SabSub will check
-   all items in the queue and will try to find subs for each of them using the
+   all items in the database and will try to find subs for each of them using the
    Bierdopje (http://www.bierdopje.com) API. As it knows exactly the show and ep
    for which to find a subtitle the API load is minimal, but try to keep it that
    way by not setting your crontab to check for subs every 3 seconds :)
