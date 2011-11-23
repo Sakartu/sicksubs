@@ -49,26 +49,32 @@ def update_ep(conn, interm_loc, final_loc, tvdbid):
     with conn:
         c = conn.cursor()
         c.execute(u'''UPDATE eps SET final_loc = ?, tvdbid = ? WHERE interm_loc
-                = ?''', (final_loc, tvdbid, interm_loc))
+                LIKE ?''', (final_loc, tvdbid, '%' + interm_loc + '%'))
 
 def get_sid(conn, tvdbid):
     with conn:
         c = conn.cursor()
         c.execute(u'''SELECT sid FROM sids WHERE tvdbid = ?''', (tvdbid,))
-        result = c.fetchone()[0]
+        result = c.fetchone()
         if not result:
             # not in db, we have to get it from bierdopje
             sid = bierdopje.get_show_id(tvdbid)
             if sid:
                 c.execute(u'''INSERT INTO sids VALUES (?, ?)''', (tvdbid, sid))
             result = sid
+        else:
+            result = result[0]
         return result
 
 def get_all_eps(conn):
     with conn:
         c = conn.cursor()
         c.execute(u'''SELECT * FROM eps''')
-        return map(Ep(conn).from_row, c.fetchall())
+        results = c.fetchall()
+        if results:
+            return map(Ep(conn).from_row, results)
+        else:
+            return []
 
 def remove_downloaded(conn, downloaded):
     with conn:
