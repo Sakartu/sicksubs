@@ -51,6 +51,8 @@ user@box$ cd /home/sickbeard/
 user@box$ chmod g+w sabsub.db
 ```
 
+Both configuration parameters have sane defaults, but change them if you want.
+
 SABnzbd
 -------
 In the main SABnzbd interface, go to:
