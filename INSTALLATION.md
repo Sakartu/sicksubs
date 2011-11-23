@@ -34,6 +34,18 @@ user@box$ cd /home/sabnzbd/bin/
 user@box$ git clone git://github.com/Sakartu/sabsub.git
 ```
 
+Let's do a little test run to make sure everything is working correctly:
+
+```
+user@box$ cd /home/sabnzbd/bin/sabsub/
+user@box$ ./test.py
+...
+----------------------------------------------------------------------
+Ran 3 tests in 1.666s
+
+OK
+```
+
 Now we're ready to configure SabSub itself. There are really only two
 configuration parameters you need to worry about, they are the FULL CAPS
 variables found at the top of sabsub.py. You need to make sure the location you
