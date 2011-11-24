@@ -30,15 +30,15 @@ executable by all. Something like 755 should be good, or use something more
 paranoid if you want :)
 
 ```
-user@box$ cd /home/sabnzbd/bin/
-user@box$ git clone git://github.com/Sakartu/sabsub.git
+sabnzbd@box$ cd /home/sabnzbd/bin/
+sabnzbd@box$ git clone git://github.com/Sakartu/sabsub.git
 ```
 
 Let's do a little test run to make sure everything is working correctly:
 
 ```
-user@box$ cd /home/sabnzbd/bin/sabsub/
-user@box$ ./test.py
+sabnzbd@box$ cd /home/sabnzbd/bin/sabsub/
+sabnzbd@box$ ./test.py
 ...
 ----------------------------------------------------------------------
 Ran 3 tests in 1.666s
@@ -60,7 +60,7 @@ user@box$ sudo addgroup showprocessors
 user@box$ sudo adduser sickbeard showprocessors
 user@box$ sudo adduser sabnzbd showprocessors
 user@box$ cd /home/sickbeard/
-user@box$ chmod g+w sabsub.db
+user@box$ sudo chmod g+w sabsub.db
 ```
 
 Both configuration parameters have sane defaults, but change them if you want.
@@ -114,10 +114,10 @@ The final step in installing SabSub is setting up a crontab to make sure your
 subs are downloaded for you. Make sure you don't set the crontab to run too
 often, otherwise the API key will get revoked making the app unusable for
 everyone. A good default is to run it once every hour. To set this up, first
-edit your crontab:
+edit the crontab for user sickbeard:
 
 ```
-user@box$ crontab -e
+sickbeard@box$ crontab -e
 ```
 
 Then, in the editor that started, add the following line to the bottom:
