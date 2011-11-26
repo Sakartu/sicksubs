@@ -30,17 +30,9 @@ class SickSubsTests(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(workdir)
 
-    def test_sickbeard_run(self):
+    def test_run(self):
         sys.argv = sick_argv
         sicksubs.sickbeard_run(self.conn)
-        with self.conn:
-            c = self.conn.cursor()
-            c.execute(u'''SELECT * FROM eps''')
-            all_eps = c.fetchall()
-            self.assertEqual(all_eps, [(u'/tmp/sicksubs_test/interm/White.Collar.S02E04.DVDRip.XviD-SAiNTS.avi', '/tmp/sicksubs_test/final/White.Collar.S02E04.By.the.Book.avi', '108611')])
-
-    def test_cron_run(self):
-        self.test_sickbeard_run()
         sicksubs.cron_run(self.conn)
         self.assertTrue(os.path.exists('/tmp/sicksubs_test/final/White.Collar.S02E04.By.the.Book.srt'))
 

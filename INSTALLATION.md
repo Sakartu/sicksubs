@@ -35,9 +35,9 @@ Let's do a little test run to make sure everything is working correctly:
 ```
 sickbeard@box$ cd /home/sickbeard/bin/sicksubs/
 sickbeard@box$ ./test.py
-...
+.
 ----------------------------------------------------------------------
-Ran 3 tests in 1.666s
+Ran 1 test in 15.270s
 
 OK
 ```
