@@ -26,6 +26,7 @@ class SickSubsTests(unittest.TestCase):
         os.makedirs(final)
         os.system('touch ' + os.path.join(interm, 'White.Collar.S02E04.DVDRip.XviD-SAiNTS.avi'))
         os.system('touch ' + os.path.join(final, 'White.Collar.S02E04.By.the.Book.avi '))
+
     def tearDown(self):
         shutil.rmtree(workdir)
 
@@ -36,7 +37,7 @@ class SickSubsTests(unittest.TestCase):
             c = self.conn.cursor()
             c.execute(u'''SELECT * FROM eps''')
             all_eps = c.fetchall()
-            self.assertEqual(all_eps, [(u'White.Collar.S02E05.DVDRip.XviD-SAiNTS', u'/tmp/sicksubs_test/interm/White.Collar.S02E04.DVDRip.XviD-SAiNTS.avi', '/tmp/sicksubs_test/final/White.Collar.S02E04.By.the.Book.avi', '108611')])
+            self.assertEqual(all_eps, [(u'/tmp/sicksubs_test/interm/White.Collar.S02E04.DVDRip.XviD-SAiNTS.avi', '/tmp/sicksubs_test/final/White.Collar.S02E04.By.the.Book.avi', '108611')])
 
     def test_cron_run(self):
         self.test_sickbeard_run()
