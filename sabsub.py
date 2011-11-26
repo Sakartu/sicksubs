@@ -2,7 +2,6 @@
 import db
 import os
 import sys
-import pickle
 import sqlite3
 import urllib2
 import bierdopje
@@ -19,29 +18,6 @@ DATABASE_FILE = u'~/.sabsub/sabsub.db'
 SUB_LANG = 'en'
 
 #***********************************</CONFIG>***********************************
-
-
-def sabnzbd_run(conn):
-    '''
-    This function will be called when the script is executed by sabnzbd+. This
-    will add a show job to the queue, so that it can be downloaded from
-    bierdopje.
-    '''
-    # parameters for the script are:
-    # 1   The final directory of the job (full path)
-    # 2   The original name of the NZB file
-    # 3   Clean version of the job name (no path info and ".nzb" removed)
-    # 4   Indexer's report number (if supported)
-    # 5   User-defined category
-    # 6   Group that the NZB was posted in e.g. alt.binaries.x
-    # 7   Status of post processing. 0 = OK, 1=failed verification, 2=failed unpack, 3=1+21
-    if sys.argv[7] != '0':
-        print('Post-processing failed, ignoring subtitle download')
-        return -1
-
-    interm_loc = sys.argv[1]
-    job_name = sys.argv[3]
-    db.add_ep(conn, job_name, interm_loc)
 
 def sickbeard_run(conn):
     '''
@@ -65,7 +41,7 @@ def sickbeard_run(conn):
     interm_loc = sys.argv[2]
     tvdbid = sys.argv[3]
 
-    db.update_ep(conn, interm_loc, final_loc, tvdbid)
+    db.add_ep(conn, interm_loc, final_loc, tvdbid)
 
 def cron_run(conn):
     '''
@@ -86,26 +62,6 @@ def cron_run(conn):
 
     download(to_download)
     db.remove_downloaded(conn, to_download)
-
-def read_queue():
-    '''
-    This helper function opens the queue file and checks whether the type is
-    correct
-    '''
-    with open(DATABASE_FILE, 'rb') as f:
-        jobs = pickle.load(f)
-
-    if type(jobs) != type(set()):
-        jobs = set()
-
-    return jobs
-
-def write_queue(jobs):
-    '''
-    This helper function opens the queue file and writes a new job queue to it
-    '''
-    with open(DATABASE_FILE, 'w+') as f:
-        pickle.dump(jobs, f)
 
 def download(to_download):
     '''
@@ -130,22 +86,18 @@ def update_tvdbids(sids, tvdbid):
         sids[tvdbid] = sid
     return sids
 
-
 if __name__ == '__main__':
     if len(sys.argv) == 2:
         db_path = sys.argv[2]
     else:
         db_path = DATABASE_FILE
-
+ 
     if not os.path.exists(db_path):
         conn = db.initialize(db_path)
     else:
         conn = sqlite3.connect(db_path)
 
-    if len(sys.argv) == 8:
-        sabnzbd_run(conn)
-    elif len(sys.argv) == 7:
+    if len(sys.argv) == 7:
         sickbeard_run(conn)
     else:
         cron_run(conn)
-
