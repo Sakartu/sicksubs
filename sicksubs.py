@@ -33,7 +33,7 @@ def sickbeard_run(conn):
     # 5 episode number
     # 6 episode air date
     # example call:
-    # ['/home/sabnzbd/sicksubs/sicksubs.py', 
+    # ['/home/sickbeard/sicksubs/sicksubs.py', 
     # u'/media/media/Series/Qi/Season 09/QI.S09E12.Illumination.avi', 
     # u'/media/bin2/usenet_downloads/tv/QI.S09E12.HDTV.XviD-FTP/qi.s09e12.hdtv.xvid-ftp.avi', 
     # '72716', '9', '12', '2011-11-25']
