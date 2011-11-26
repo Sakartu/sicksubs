@@ -11,8 +11,8 @@ import nameparser
 # These are parameters that you may want to configure, although the defaults are
 # quite sane 
 
-# location where sabsub should store the queue file
-DATABASE_FILE = u'~/.sabsub/sabsub.db' 
+# location where sicksubs should store the queue file
+DATABASE_FILE = u'~/.sicksubs/sicksubs.db' 
 
 # the language of the downloaded subs, can be nl or en
 SUB_LANG = 'en'
@@ -33,7 +33,7 @@ def sickbeard_run(conn):
     # 5 episode number
     # 6 episode air date
     # example call:
-    # ['/home/sabnzbd/sabsub/sabsub.py', 
+    # ['/home/sabnzbd/sicksubs/sicksubs.py', 
     # u'/media/media/Series/Qi/Season 09/QI.S09E12.Illumination.avi', 
     # u'/media/bin2/usenet_downloads/tv/QI.S09E12.HDTV.XviD-FTP/qi.s09e12.hdtv.xvid-ftp.avi', 
     # '72716', '9', '12', '2011-11-25']
