@@ -27,9 +27,8 @@ def initialize(path):
                 WHERE type="table"
                 AND name="eps"''').fetchall()
         if not test:
-            c.execute(u'''CREATE TABLE eps(job_name, interm_loc, final_loc, tvdbid)''')
-            c.execute(u'''CREATE UNIQUE INDEX unique_eps ON eps(job_name,
-                    interm_loc)''')
+            c.execute(u'''CREATE TABLE eps(interm_loc, final_loc, tvdbid)''')
+            c.execute(u'''CREATE UNIQUE INDEX unique_eps ON eps(interm_loc)''')
 
         #test to see if the tvr_shows table exists
         test = c.execute(u'''SELECT name FROM sqlite_master
@@ -41,16 +40,10 @@ def initialize(path):
 
     return conn
 
-def add_ep(conn, job_name, interm_loc):
+def add_ep(conn, interm_loc, final_loc, tvdbid):
     with conn:
         c = conn.cursor()
-        c.execute(u'''INSERT INTO eps(job_name, interm_loc) VALUES (?, ?)''', (job_name, interm_loc))
-
-def update_ep(conn, interm_loc, final_loc, tvdbid):
-    with conn:
-        c = conn.cursor()
-        c.execute(u'''UPDATE eps SET final_loc = ?, tvdbid = ? WHERE interm_loc
-                LIKE ?''', (final_loc, tvdbid, '%' + interm_loc + '%'))
+        c.execute(u'''INSERT INTO eps VALUES (?, ?, ?)''', (interm_loc, final_loc, tvdbid))
 
 def get_sid(conn, tvdbid):
     with conn:
