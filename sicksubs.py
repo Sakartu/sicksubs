@@ -42,6 +42,7 @@ def sickbeard_run(conn):
     tvdbid = sys.argv[3]
 
     db.add_ep(conn, interm_loc, final_loc, tvdbid)
+    cron_run(conn)
 
 def cron_run(conn):
     '''
