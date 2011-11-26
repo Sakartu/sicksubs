@@ -9,6 +9,7 @@ def initialize(path):
     This method initializes the next database at the given path. It also sets up
     the tables and returns the created db connection.
     '''
+    path = os.path.expandvars(os.path.expanduser(path))
     # create the database dir if necessary
     if not os.path.exists(os.path.dirname(path)):
         try:
@@ -17,7 +18,7 @@ def initialize(path):
             print(sys.argv[0] + ' : Could not create database directory "{0}"!'.format(path))
 
     # then open a connection and setup the tables
-    conn = sqlite3.connect(os.path.expanduser(os.path.expandvars(path)))
+    conn = sqlite3.connect(path)
 
     with conn:
         c = conn.cursor()
