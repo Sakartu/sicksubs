@@ -14,3 +14,9 @@ def find_link(name, sublinks):
     for link in sublinks:
         if name in link:
             return link
+
+def get_job_name(loc):
+    if '/' in loc:
+        return loc[loc.rfind('/'):]
+    else:
+        return loc
