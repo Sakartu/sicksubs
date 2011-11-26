@@ -61,8 +61,9 @@ def cron_run(conn):
                 ep.sub = sub
                 to_download.append(ep)
 
-    download(to_download)
-    db.remove_downloaded(conn, to_download)
+    result = download(to_download)
+    result = result and db.remove_downloaded(conn, to_download)
+    return result
 
 def download(to_download):
     '''
@@ -80,6 +81,8 @@ def download(to_download):
         content = resp.read()
         with open(os.path.join(baseloc + subext), 'w+') as sub:
             sub.write(content)
+            print "Successfully downloaded subs for {0}".format(baseloc)
+            return True
 
 def update_tvdbids(sids, tvdbid):
     if tvdbid not in sids:
