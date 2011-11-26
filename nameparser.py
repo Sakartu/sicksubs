@@ -1,4 +1,5 @@
 import re
+import os
 rexes = map(re.compile, ['S(\d\d)E(\d\d)', '(\d{1,2})x(\d{1,2})'])
 
 def get_ep_details(line):
@@ -17,6 +18,6 @@ def find_link(name, sublinks):
 
 def get_job_name(loc):
     if '/' in loc:
-        return loc[loc.rfind('/'):]
+        return os.path.splitext(loc[loc.rfind('/') + 1:])[0]
     else:
         return loc
