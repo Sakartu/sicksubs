@@ -73,9 +73,9 @@ def download(to_download):
     for ep in to_download:
         ep_loc = os.path.expanduser(ep.final_loc)
         ep_stat = os.stat(ep_loc)
-        ep_perms = ep_stat.pm_mode
-        ep_uid = ep_stat.pm_uid
-        ep_gid = ep_stat.pm_gid
+        ep_perms = ep_stat.st_mode
+        ep_uid = ep_stat.st_uid
+        ep_gid = ep_stat.st_gid
         baseloc = os.path.splitext(ep_loc)[0]
         resp = urllib2.urlopen(ep.sub)
 
