@@ -71,7 +71,12 @@ def download(to_download):
     a subtitle extension
     '''
     for ep in to_download:
-        baseloc = os.path.splitext(os.path.expanduser(ep.final_loc))[0]
+        ep_loc = os.path.expanduser(ep.final_loc)
+        ep_stat = os.stat(ep_loc)
+        ep_perms = ep_stat.pm_mode
+        ep_uid = ep_stat.pm_uid
+        ep_gid = ep_stat.pm_gid
+        baseloc = os.path.splitext(ep_loc)[0]
         resp = urllib2.urlopen(ep.sub)
 
         if 'content-disposition' in resp.info().dict:
@@ -79,8 +84,11 @@ def download(to_download):
         else:
             subext = '.srt'
         content = resp.read()
-        with open(os.path.join(baseloc + subext), 'w+') as sub:
+        sub_path = os.path.join(baseloc + subext)
+        with open(sub_path, 'w+') as sub:
             sub.write(content)
+            os.chown(sub_path, ep_uid, ep_gid)
+            os.chmod(sub_path, ep_perms)
             print "Successfully downloaded subs for {0}".format(baseloc)
             return True
 
