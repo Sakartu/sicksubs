@@ -1,10 +1,12 @@
 import re
 import os
-rexes = map(re.compile, ['S(\d\d)E(\d\d)', '(\d{1,2})x(\d{1,2})'])
+rexes = ['S(\d\d)E(\d\d)', '(\d{1,2})x(\d{1,2})', '(\d)(\d\d)'] #in order
+
 
 def get_ep_details(line):
     for rex in rexes:
-        m = rex.search(line)
+        c = re.compile(rex, re.I)
+        m = c.search(line)
         if m:
             try:
                 return (int(m.group(1)), int(m.group(2)))
