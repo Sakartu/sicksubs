@@ -43,7 +43,7 @@ def initialize(path):
 def add_ep(conn, interm_loc, final_loc, tvdbid):
     with conn:
         c = conn.cursor()
-        c.execute(u'''INSERT OR UPDATE INTO eps VALUES (?, ?, ?)''', (interm_loc, final_loc, tvdbid))
+        c.execute(u'''INSERT OR REPLACE INTO eps VALUES (?, ?, ?)''', (interm_loc, final_loc, tvdbid))
 
 def get_sid(conn, tvdbid):
     with conn:
