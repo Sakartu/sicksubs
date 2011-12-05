@@ -1,6 +1,7 @@
 import re
 import os
-rexes = ['S(\d\d)E(\d\d)', '(\d{1,2})x(\d{1,2})', '(\d)(\d\d)'] #in order
+rexes = ['(S(\d\d)E(\d\d))', '((\d{1,2})x(\d{1,2}))', '((\d)(\d\d))'] #in order
+quals = ['720p', '1080p', '1080i', 'HDTV']
 
 def get_ep_details(line):
     for rex in rexes:
@@ -8,17 +9,30 @@ def get_ep_details(line):
         m = c.search(line)
         if m:
             try:
-                return (int(m.group(1)), int(m.group(2)))
+                return (m.group(1), int(m.group(2)), int(m.group(3)))
             except:
                 return (None, None)
 
 def find_link(name, sublinks):
     if not sublinks:
         return None
-    grp = get_release_group(name)
+
+    # match the full name if we can
     for link in sublinks:
-        if grp in link:
+        if name in link:
             return link
+
+    grp = get_release_group(name)
+    (seline, _, _) = get_ep_details(name)
+
+    # if not, search for group, season, ep and quality identifier
+    for link in sublinks:
+        if grp in link and seline in link and get_quality(name) == get_quality(link):
+            # group and quality match, check for season and ep
+            return link
+
+    # return nothing if it can't be found
+    return None
 
 def get_release_group(name):
     '''
@@ -26,11 +40,20 @@ def get_release_group(name):
     lost.girl.s02e11.hdtv.xvid-2hd.avi
     returns '-2hd'
     '''
-    name = os.path.splitext(name)[0]
-    if name:
+    if '-' in name:
         return name[name.rfind('-'):]
     else:
         return name
+
+def get_quality(name):
+    '''
+    Outputs the quality of a name, hightest quality first.
+    '''
+    for qual in quals:
+        if qual.lower() in name.lower():
+            return qual
+
+    return None
 
 def get_job_name(loc):
     if '/' in loc:
