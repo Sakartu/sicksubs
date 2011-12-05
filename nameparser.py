@@ -14,6 +14,8 @@ def get_ep_details(line):
                 return (None, None)
 
 def find_link(name, sublinks):
+    if not sublinks:
+        return None
     for link in sublinks:
         if name in link:
             return link

@@ -26,7 +26,8 @@ def get_subs(showid, lang, season, ep):
     # since bierdopje sometimes shifts the epnumbers around, we also check
     # the previous ep
     url = SUBS_BY_EP.format(sid=showid, s=season, e=ep - 1, lang=lang)
-    data = data + get_content(url, 'downloadlink')
+    if data:
+        data = data + get_content(url, 'downloadlink')
     if data:
         return [x.firstChild.data for x in data]
     else:
