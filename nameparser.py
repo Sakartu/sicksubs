@@ -19,7 +19,7 @@ def find_link(name, sublinks):
 
     # match the full name if we can
     for link in sublinks:
-        if name in link:
+        if name.lower() in link.lower():
             return link
 
     grp = get_release_group(name)
