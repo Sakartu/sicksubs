@@ -66,7 +66,7 @@ extra_scripts = ""
 to
 
 ```
-extra_scripts = /home/user/bin/sicksubs/SickSubs.py
+extra_scripts = /home/user/bin/sicksubs/sicksubs.py
 ```
 
 where, ofcourse, the path is the path to the SickSubs.py file. Afterwards you can
