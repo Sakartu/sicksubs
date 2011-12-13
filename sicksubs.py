@@ -61,16 +61,20 @@ def cron_run(conn):
                 ep.sub = sub
                 to_download.append(ep)
 
-    result = download(to_download)
+    result = True
+    if not to_download:
+        print "No subs available for any of your eps yet!"
+    for d in to_download:
+        result = result and download(d)
     result = result and db.remove_downloaded(conn, to_download)
     return result
 
-def download(to_download):
+def download(ep):
     '''
-    This helper method downloads a sub to a filed named as the episode, but with
+    This helper method downloads a sub to a file named as the episode, but with
     a subtitle extension
     '''
-    for ep in to_download:
+    try:
         ep_loc = os.path.expanduser(ep.final_loc)
         ep_stat = os.stat(ep_loc)
         ep_perms = ep_stat.st_mode
@@ -90,7 +94,10 @@ def download(to_download):
             os.chown(sub_path, ep_uid, ep_gid)
             os.chmod(sub_path, ep_perms)
             print "Successfully downloaded subs for {0}".format(baseloc)
-            return True
+    except:
+        print "Couldn't download sub for ep {name}".format(name=baseloc)
+        return False
+    return True
 
 def update_tvdbids(sids, tvdbid):
     if tvdbid not in sids:

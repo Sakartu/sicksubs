@@ -64,9 +64,12 @@ def get_all_eps(conn):
     with conn:
         c = conn.cursor()
         c.execute(u'''SELECT * FROM eps''')
-        results = c.fetchall()
-        if results:
-            return map(Ep(conn).from_row, results)
+        rows = c.fetchall()
+        if rows:
+            result = []
+            for row in rows:
+                result.append(Ep(conn, row))
+            return result
         else:
             return []
 
