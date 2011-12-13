@@ -27,7 +27,9 @@ def get_subs(showid, lang, season, ep):
     # the previous ep
     url = SUBS_BY_EP.format(sid=showid, s=season, e=ep - 1, lang=lang)
     if data:
-        data = data + get_content(url, 'downloadlink')
+        more_data = get_content(url, 'downloadlink')
+        if more_data:
+            data = data + more_data
     if data:
         return [x.firstChild.data for x in data]
     else:
