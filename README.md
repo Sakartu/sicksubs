@@ -28,3 +28,11 @@ SickSubs can be found on github: https://github.com/Sakartu/sicksubs.git
 
 If you like SickSubs you may want to try out my other show management tool as well
 called next. next can be found at https://github.com/Sakartu/next
+
+Included with SickSubs is a small rename_subs utility. If you already downloaded
+some subs but they don't have the correct name yet (read: there's still scene
+release group stuff in the name and the avi doesn't have that), just run
+rename_subs in the dir where the subs/avi files are located and it will rename
+the sub file to the proper name, using the avi naming scheme. If you provide 
+a single commandline argument to rename_subs you can indicate the directory in
+which it should work (instead of the current working directory).
