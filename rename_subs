@@ -1,0 +1,31 @@
+#!/usr/bin/env python
+import os
+import sys
+import re
+
+VID_EXTS = ['.avi', '.mkv']
+SUB_EXTS = ['.sub', '.srt']
+
+
+se_rex = re.compile('(.*)(S\d{1,2}E\d{1,2})(.*)\.\w{3}')
+if len(sys.argv) > 1:
+    path = sys.argv[1]
+else:
+    path = '.'
+
+files = [os.path.join(os.path.abspath(path), x) for x in os.listdir(path)]
+
+avis = filter(lambda x : x[-4:] in VID_EXTS, files)
+srts = filter(lambda x : x[-4:] in SUB_EXTS, files)
+
+for avi in avis:
+    m = se_rex.search(avi)
+    prefix = m.group(1)
+    se = m.group(2)
+    postfix = m.group(3)
+    for srt in srts:
+        if se.lower() in srt.lower():
+            new_name = prefix + se + postfix + srt[-4:]
+            if new_name != srt:
+                print srt, "->", new_name
+                os.rename(srt, new_name)
