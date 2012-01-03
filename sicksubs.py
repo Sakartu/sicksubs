@@ -61,13 +61,13 @@ def cron_run(conn):
                 ep.sub = sub
                 to_download.append(ep)
 
-    result = True
     if not to_download:
         print "No subs available for any of your eps yet!"
     for d in to_download:
-        result = result and download(d)
-    result = result and db.remove_downloaded(conn, to_download)
-    return result
+        d.result = download(d)
+    db.remove_downloaded(conn, to_download)
+    # check if all files are parsed successfully
+    return all([ep.result for ep in to_download])
 
 def download(ep):
     '''
@@ -94,8 +94,9 @@ def download(ep):
             os.chown(sub_path, ep_uid, ep_gid)
             os.chmod(sub_path, ep_perms)
             print "Successfully downloaded subs for {0}".format(baseloc)
-    except:
-        print "Couldn't download sub for ep {name}".format(name=baseloc)
+    except Exception, e:
+        print "Couldn't download sub for ep {name}:".format(name=ep.final_loc)
+        print e
         return False
     return True
 
