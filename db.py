@@ -76,7 +76,7 @@ def get_all_eps(conn):
 def remove_downloaded(conn, downloaded):
     with conn:
         c = conn.cursor()
-        tvdbids = [(x.tvdbid,) for x in downloaded]
+        tvdbids = [(x.tvdbid,) for x in downloaded if x.result]
         c.executemany(u'''DELETE FROM eps WHERE tvdbid = ?''', tvdbids)
         return True
 
