@@ -2,9 +2,11 @@
 import db
 import os
 import sys
+import shlex
 import sqlite3
 import urllib2
 import bierdopje
+import subprocess
 import nameparser
 
 #***********************************<CONFIG>************************************
@@ -16,6 +18,15 @@ DATABASE_FILE = u'~/.sicksubs/sicksubs.db'
 
 # the language of the downloaded subs, can be nl or en
 SUB_LANG = 'en'
+
+# post-processing script(s), will be called with one argument, meaning:
+# "Nothing" = Nothing found
+# <Name of found ep> = Found new subtitles for given ep
+# 
+# multiple scripts can be separated by comma's. do _not_ use unicode strings
+# since the shlex module does not support unicode prior to 2.7.3
+#POST_CALL = '' # u'/home/peter/test.sh,/home/peter/test2.sh'
+POST_CALL = './test.sh'
 
 #***********************************</CONFIG>***********************************
 
@@ -63,11 +74,22 @@ def cron_run(conn):
 
     if not to_download:
         print "No subs available for any of your eps yet!"
+        return True
     for d in to_download:
         d.result = download(d)
-    db.remove_downloaded(conn, to_download)
+    # remove successfully downloaded files from db
+    successful = filter(lambda x : x.result, to_download)
+    db.remove_downloaded(conn, successful)
     # check if all files are parsed successfully
-    return all([ep.result for ep in to_download])
+    result = all([ep.result for ep in to_download])
+    # call post-processing for successfully downloaded files
+    for d in successful:
+        for script in POST_CALL.split(','):
+            to_call = shlex.split(script)
+            to_call.append(d.final_loc)
+            subprocess.call(to_call)
+    # return result
+    return result
 
 def download(ep):
     '''
