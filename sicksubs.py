@@ -19,14 +19,13 @@ DATABASE_FILE = u'~/.sicksubs/sicksubs.db'
 # the language of the downloaded subs, can be nl or en
 SUB_LANG = 'en'
 
-# post-processing script(s), will be called with one argument, meaning:
-# "Nothing" = Nothing found
-# <Name of found ep> = Found new subtitles for given ep
+# post-processing script(s), will be called with one argument on successful
+# sub download, the name of the ep for which a sub was found
 # 
 # multiple scripts can be separated by comma's. do _not_ use unicode strings
 # since the shlex module does not support unicode prior to 2.7.3
-#POST_CALL = '' # u'/home/peter/test.sh,/home/peter/test2.sh'
-POST_CALL = './test.sh'
+POST_CALL = '' # '/home/peter/test.sh,/home/peter/test2.sh'
+#POST_CALL = './test.sh'
 
 #***********************************</CONFIG>***********************************
 
