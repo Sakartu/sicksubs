@@ -82,6 +82,9 @@ def cron_run(conn):
     # check if all files are parsed successfully
     result = all([ep.result for ep in to_download])
     # call post-processing for successfully downloaded files
+    if not POST_CALL:
+        return result
+
     for d in successful:
         for script in POST_CALL.split(','):
             to_call = shlex.split(script)
