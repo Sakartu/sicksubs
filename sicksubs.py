@@ -35,7 +35,7 @@ def sickbeard_run(conn):
     will add a final_location to the correct item in the queue, to make sure the
     subtitle file can be moved there after downloading.
     '''
-    # It passes 5 parameters to these scripts: 
+    # It passes 6 parameters to these scripts: 
     # 1 final full path to the episode file
     # 2 original name of the episode file
     # 3 show tvdb id
