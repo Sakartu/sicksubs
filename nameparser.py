@@ -30,8 +30,7 @@ def find_link(name, sublinks):
     # if not, search for group, season, ep and quality identifier
     for link in sublinks:
         if grp.lower() in link.lower() and get_quality(name) == get_quality(link):
-            if seline.lower() in link.lower() or (s in link 
-                    and e in link[link.find(s):]):
+            if seline.lower() in link.lower():
                 # group and quality match, check for season and ep
                 return link
 
