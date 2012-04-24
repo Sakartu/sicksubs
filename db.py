@@ -80,4 +80,11 @@ def remove_downloaded(conn, downloaded):
         c.executemany(u'''DELETE FROM eps WHERE tvdbid = ?''', tvdbids)
         return True
 
+def remove_single(conn, ep):
+    with conn:
+        c = conn.cursor()
+        tvdbid = ep.tvdbid
+        c.execute(u'''DELETE FROM eps WHERE tvdbid = ?''', tvdbid)
+        return True
+
 

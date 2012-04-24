@@ -70,6 +70,11 @@ def cron_run(conn):
             if sub:
                 ep.sub = sub
                 to_download.append(ep)
+            else:
+                ep_name = os.splitext(os.path.expanduser(ep.final_loc))[0]
+                if os.path.exists(ep_name + '.srt'):
+                    # Mabe user downloaded sub for this ep manually?
+                    db.remove_single(conn, ep)
 
     if not to_download:
         print "No subs available for any of your eps yet!"
