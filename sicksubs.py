@@ -9,25 +9,26 @@ import bierdopje
 import subprocess
 import nameparser
 
-#***********************************<CONFIG>************************************
-# These are parameters that you may want to configure, although the defaults are
-# quite sane 
+#***********************************<CONFIG>***********************************
+# These are parameters that you may want to configure, although the defaults
+# are quite sane
 
 # location where sicksubs should store the queue file
-DATABASE_FILE = u'~/.sicksubs/sicksubs.db' 
+DATABASE_FILE = u'~/.sicksubs/sicksubs.db'
 
 # the language of the downloaded subs, can be nl or en
 SUB_LANG = 'en'
 
 # post-processing script(s), will be called with one argument on successful
 # sub download, the name of the ep for which a sub was found
-# 
+#
 # multiple scripts can be separated by comma's. do _not_ use unicode strings
 # since the shlex module does not support unicode prior to 2.7.3
-POST_CALL = '' # '/home/peter/test.sh,/home/peter/test2.sh'
+POST_CALL = ''  # '/home/peter/test.sh,/home/peter/test2.sh'
 #POST_CALL = './test.sh'
 
-#***********************************</CONFIG>***********************************
+#***********************************</CONFIG>*********************************
+
 
 def sickbeard_run(conn):
     '''
@@ -35,7 +36,7 @@ def sickbeard_run(conn):
     will add a final_location to the correct item in the queue, to make sure the
     subtitle file can be moved there after downloading.
     '''
-    # It passes 6 parameters to these scripts: 
+    # It passes 6 parameters to these scripts:
     # 1 final full path to the episode file
     # 2 original name of the episode file
     # 3 show tvdb id
@@ -43,9 +44,9 @@ def sickbeard_run(conn):
     # 5 episode number
     # 6 episode air date
     # example call:
-    # ['/home/sickbeard/sicksubs/sicksubs.py', 
-    # u'/media/media/Series/Qi/Season 09/QI.S09E12.Illumination.avi', 
-    # u'/media/bin2/usenet_downloads/tv/QI.S09E12.HDTV.XviD-FTP/qi.s09e12.hdtv.xvid-ftp.avi', 
+    # ['/home/sickbeard/sicksubs/sicksubs.py',
+    # u'/media/media/Series/Qi/Season 09/QI.S09E12.Illumination.avi',
+    # u'/media/bin2/usenet_downloads/tv/QI.S09E12.HDTV.XviD-FTP/qi.s09e12.hdtv.xvid-ftp.avi',
     # '72716', '9', '12', '2011-11-25']
     final_loc = sys.argv[1]
     interm_loc = sys.argv[2]
@@ -54,6 +55,7 @@ def sickbeard_run(conn):
     db.add_ep(conn, interm_loc, final_loc, tvdbid)
     cron_run(conn)
 
+
 def cron_run(conn):
     '''
     This function will be called when the script is executed by cron. This will
@@ -61,13 +63,13 @@ def cron_run(conn):
     '''
     # get all eps
     all_eps = db.get_all_eps(conn)
-    
+
     to_download = []
     for ep in all_eps:
         if ep.sid and ep.season and ep.ep:
             sublinks = bierdopje.get_subs(ep.sid, SUB_LANG, ep.season, ep.ep)
             sub = nameparser.find_link(ep.job_name, sublinks)
-            if sub:
+            if sub and os.path.exists(ep.final_loc):
                 ep.sub = sub
                 to_download.append(ep)
             else:
@@ -76,6 +78,9 @@ def cron_run(conn):
                     # Mabe user downloaded sub for this ep manually?
                     db.remove_single(conn, ep)
                     print u'Cleaned up db because ' + ep_name + ' already has subs!'
+                elif not os.path.exists(ep.final_loc):
+                    db.remove_single(conn, ep)
+                    print u'Cleaned up db because ' + ep_name + ' is no longer available on disk!'
 
     if not to_download:
         print "No subs available for any of your eps yet!"
@@ -141,7 +146,7 @@ if __name__ == '__main__':
         db_path = sys.argv[2]
     else:
         db_path = DATABASE_FILE
- 
+
     if not os.path.exists(db_path):
         conn = db.initialize(db_path)
     else:
