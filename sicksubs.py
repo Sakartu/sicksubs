@@ -33,8 +33,8 @@ POST_CALL = ''  # '/home/peter/test.sh,/home/peter/test2.sh'
 def sickbeard_run(conn):
     '''
     This function will be called when the script is executed by sickbeard. This
-    will add a final_location to the correct item in the queue, to make sure the
-    subtitle file can be moved there after downloading.
+    will add a final_location to the correct item in the queue, to make sure
+    the subtitle file can be moved there after downloading.
     '''
     # It passes 6 parameters to these scripts:
     # 1 final full path to the episode file
@@ -46,7 +46,8 @@ def sickbeard_run(conn):
     # example call:
     # ['/home/sickbeard/sicksubs/sicksubs.py',
     # u'/media/media/Series/Qi/Season 09/QI.S09E12.Illumination.avi',
-    # u'/media/bin2/usenet_downloads/tv/QI.S09E12.HDTV.XviD-FTP/qi.s09e12.hdtv.xvid-ftp.avi',
+    # u'/media/bin2/usenet_downloads/tv/QI.S09E12.HDTV.XviD-FTP/qi.s09e12.
+    # hdtv.xvid-ftp.avi',
     # '72716', '9', '12', '2011-11-25']
     final_loc = sys.argv[1]
     interm_loc = sys.argv[2]
@@ -77,10 +78,12 @@ def cron_run(conn):
                 if os.path.exists(ep_name + '.srt'):
                     # Mabe user downloaded sub for this ep manually?
                     db.remove_single(conn, ep)
-                    print u'Cleaned up db because ' + ep_name + ' already has subs!'
+                    print u'Cleaned up db because ' + ep_name + ' already has '
+                    'subs!'
                 elif not os.path.exists(ep.final_loc):
                     db.remove_single(conn, ep)
-                    print u'Cleaned up db because ' + ep_name + ' is no longer available on disk!'
+                    print u'Cleaned up db because ' + ep_name + ' is no '
+                    'longer available on disk!'
 
     if not to_download:
         print "No subs available for any of your eps yet!"
@@ -88,7 +91,7 @@ def cron_run(conn):
     for d in to_download:
         d.result = download(d)
     # remove successfully downloaded files from db
-    successful = filter(lambda x : x.result, to_download)
+    successful = filter(lambda x: x.result, to_download)
     db.remove_downloaded(conn, successful)
     # check if all files are parsed successfully
     result = all([ep.result for ep in to_download])
@@ -103,6 +106,7 @@ def cron_run(conn):
             subprocess.call(to_call)
     # return result
     return result
+
 
 def download(ep):
     '''
@@ -119,7 +123,8 @@ def download(ep):
         resp = urllib2.urlopen(ep.sub)
 
         if 'content-disposition' in resp.info().dict:
-            subext = os.path.splitext(resp.info().dict['content-disposition'])[1]
+            filename = resp.info().dict['content-disposition']
+            subext = os.path.splitext(filename)[1]
         else:
             subext = '.srt'
         content = resp.read()
@@ -134,6 +139,7 @@ def download(ep):
         print e
         return False
     return True
+
 
 def update_tvdbids(sids, tvdbid):
     if tvdbid not in sids:
