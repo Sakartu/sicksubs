@@ -3,7 +3,9 @@ import os
 
 # regexes are in order of importance
 rexes = ['(S(\d\d)E(\d\d))', '((\d{1,2})x(\d{1,2}))', '((\d)(\d\d))']
-quals = ['720p', '1080p', '1080i', 'HDTV']
+hd_quals = ['720p', '1080p', '1080i']
+sd_quals = ['HDTV']
+quals = hd_quals + sd_quals
 video_exts = [u'mkv', u'avi', u'mpg', u'mpeg', u'mp4', u'mov']
 
 
@@ -17,6 +19,7 @@ def get_ep_details(line):
                 return (m.group(1), int(m.group(2)), int(m.group(3)))
             except:
                 return (None, None)
+
 
 def find_link(name, sublinks):
     if not sublinks:
@@ -34,7 +37,8 @@ def find_link(name, sublinks):
 
     # if not, search for group, season, ep and quality identifier
     for link in sublinks:
-        if grp.lower() in link.lower() and get_quality(name) == get_quality(link):
+        if (grp.lower() in link.lower()
+        and get_quality(name) == get_quality(link)):
             if seline.lower() in link.lower():
                 # group and quality match, check for season and ep
                 return link
@@ -42,9 +46,10 @@ def find_link(name, sublinks):
     # return nothing if it can't be found
     return None
 
+
 def get_release_group(name):
     '''
-    Get the release group from a name. For instance, in the case of 
+    Get the release group from a name. For instance, in the case of
     lost.girl.s02e11.hdtv.xvid-2hd.avi
     returns '-2hd'
     '''
@@ -52,6 +57,7 @@ def get_release_group(name):
         return name[name.rfind('-'):]
     else:
         return name
+
 
 def get_quality(name):
     '''
@@ -63,8 +69,27 @@ def get_quality(name):
 
     return None
 
+
 def get_job_name(loc):
     if '/' in loc:
         return os.path.splitext(loc[loc.rfind('/') + 1:])[0]
     else:
         return loc
+
+
+def filter_qual(subs, hd):
+    '''
+    This helper function first splits the given sub tuples in hd and sd subs
+    and then returns one of both possibilities given the hd param
+    '''
+    sds = []
+    hds = []
+    for s in subs:
+        if get_quality(s[0]) in hd_quals:
+            hds.append(s)
+        else:
+            sds.append(s)
+    if hd:
+        return hds
+    else:
+        return sds
