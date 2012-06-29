@@ -1,7 +1,11 @@
 import re
 import os
-rexes = ['(S(\d\d)E(\d\d))', '((\d{1,2})x(\d{1,2}))', '((\d)(\d\d))'] #in order
+
+# regexes are in order of importance
+rexes = ['(S(\d\d)E(\d\d))', '((\d{1,2})x(\d{1,2}))', '((\d)(\d\d))']
 quals = ['720p', '1080p', '1080i', 'HDTV']
+video_exts = [u'mkv', u'avi', u'mpg', u'mpeg', u'mp4', u'mov']
+
 
 def get_ep_details(line):
     for rex in rexes:
@@ -9,6 +13,7 @@ def get_ep_details(line):
         m = c.search(line)
         if m:
             try:
+                # S01E02, 01, 02
                 return (m.group(1), int(m.group(2)), int(m.group(3)))
             except:
                 return (None, None)
