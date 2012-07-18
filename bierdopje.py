@@ -31,6 +31,8 @@ def find_shows_by_name(name):
     '''
     url = SID_BY_NAME.format(name=urllib.quote(name))
     dom = get_content(url)
+    if not dom:
+        return None
     names = get_datas(dom.getElementsByTagName('showname'))
     firstaired = get_datas(dom.getElementsByTagName('firstaired'))
     sids = get_datas(dom.getElementsByTagName('showid'))
@@ -69,10 +71,13 @@ def get_subs_by_season(showid, lang, season):
 
 def get_content(url, tag=None):
     try:
-        req = urllib2.urlopen(url)
-        dom = minidom.parse(req)
-        req.close()
-    except:
+        req = urllib2.Request(url)
+        req.add_header('User-agent', 'sicksubs/v1.0')
+        resp = urllib2.urlopen(req)
+        dom = minidom.parse(resp)
+        resp.close()
+    except Exception, e:
+        print e
         return None
 
     if not dom or (tag and len(dom.getElementsByTagName(tag)) == 0):
