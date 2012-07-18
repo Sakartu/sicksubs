@@ -1,13 +1,8 @@
 #!/usr/bin/python
-import db
 import os
 import sys
-import glob
-import shlex
-import sqlite3
 import urllib2
 import bierdopje
-import subprocess
 import nameparser
 
 
@@ -51,10 +46,15 @@ def main():
         lang = raw_input(u'Which lang would you like to download subs for '
         '(en/nl)? [en] ').lower().strip()
         if lang not in ('nl', 'en'):
+            print u'Invalid choice, defaulting to "en"'
             lang = 'en'
 
         qual = raw_input(u'Do you prefer HD rips? [yes] ').lower().strip()
         hd = ('y' in qual or qual.strip() == '')
+
+        answer = raw_input(u'Do you want to download all available '
+        'subs? [no] ')
+        download_all = 'y' in answer.lower()
 
         all_subs = bierdopje.get_subs_by_season(sid, lang, s)
         to_download = []
@@ -70,6 +70,11 @@ def main():
                 if not possibles:
                     print u'Could not find subs for ep number {0}!'.format(e)
                     continue
+
+                if download_all:
+                    to_download.extend(possibles)
+                    continue
+
                 if len(possibles) == 1:
                     # only one choice, download immediately
                     print (u'Only one choice for ep number {0}, will download '
@@ -82,25 +87,25 @@ def main():
                     print '{id:02d}.   {name}'.format(
                             id=i + 1,
                             name=name)
-                try:
-                    answer = int(raw_input(u'Which sub (id) would you like me '
-                    'to download? '))
-                    if answer < 1 or answer > (i + 1):
-                        raise Exception
-                    to_download.append(possibles[answer - 1])
-                except KeyboardInterrupt:
-                    raise KeyboardInterrupt
-                except:
-                    print u'Garbage or too large id given, continuing with '
-                    'next...'
+                answer = None
+                while answer < 1 or answer > (i + 1):
+                    try:
+                        answer = int(raw_input(u'Which sub (id) would you '
+                            'like me to download? '))
+                    except KeyboardInterrupt:
+                        raise KeyboardInterrupt
+                    except:
+                        print u'That\'s not a number!'
+                to_download.append(possibles[answer - 1])
             finally:
                 e += 1
+
         print u'Downloading...'
+
         for d in to_download:
             download(d)
 
-        print (u'Found subs for {num} out of {total} eps, have fun '
-        'watching!').format(num=len(to_download), total=maxsub)
+        print u'Download complete!'
     except KeyboardInterrupt:
         print u'Aborting...'
         sys.exit(-1)
