@@ -14,6 +14,10 @@ def main():
             showname = raw_input(u'What show would you like subs for? ')
         showinfos = bierdopje.find_shows_by_name(showname)
 
+        if not showinfos:
+            print u'Could not find show "{0}"!'.format(showname)
+            return
+
         maxlen = max(map(lambda x: len(x[0]), showinfos))
         showlist = 'id.   ' + 'Name'.ljust(maxlen) + '   Aired\n'
         for i, (name, firstaired, sid, seasons) in enumerate(showinfos):
