@@ -31,6 +31,10 @@ def find_shows_by_name(name):
     '''
     url = SID_BY_NAME.format(name=urllib.quote(name))
     dom = get_content(url)
+    return _get_info_from_dom(dom)
+
+
+def _get_info_from_dom(dom):
     if not dom:
         return None
     names = get_datas(dom.getElementsByTagName('showname'))
@@ -38,6 +42,12 @@ def find_shows_by_name(name):
     sids = get_datas(dom.getElementsByTagName('showid'))
     seasons = get_datas(dom.getElementsByTagName('seasons'))
     return zip(names, firstaired, sids, seasons)
+
+
+def find_show_by_id(tvdbid):
+    url = SID_BY_TVDBID.format(sid=urllib.quote(tvdbid))
+    dom = get_content(url)
+    return _get_info_from_dom(dom)
 
 
 def get_subs(showid, lang, season, ep):

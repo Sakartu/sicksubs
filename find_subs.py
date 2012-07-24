@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import os
 import sys
+import string
 import urllib2
 import bierdopje
 import nameparser
@@ -9,13 +10,19 @@ import nameparser
 def main():
     try:
         if sys.argv[1:]:
-            showname = ' '.join(sys.argv[1:])
+            identifier = ' '.join(sys.argv[1:])
         else:
-            showname = raw_input(u'What show would you like subs for? ')
-        showinfos = bierdopje.find_shows_by_name(showname)
+            identifier = raw_input(u'What show (name or tvdb id) would you '
+            'like subs for? ')
+        identifier = identifier.strip()
+
+        if all(x in string.digits for x in identifier.strip()):
+            showinfos = bierdopje.find_show_by_id(identifier)
+        else:
+            showinfos = bierdopje.find_shows_by_name(identifier)
 
         if not showinfos:
-            print u'Could not find show "{0}"!'.format(showname)
+            print u'Could not find show "{0}"!'.format(identifier)
             return
 
         maxlen = max(map(lambda x: len(x[0]), showinfos))
@@ -49,7 +56,9 @@ def main():
 
         lang = raw_input(u'Which lang would you like to download subs for '
         '(en/nl)? [en] ').lower().strip()
-        if lang not in ('nl', 'en'):
+        if lang == '':
+            lang = 'en'
+        elif lang not in ('nl', 'en'):
             print u'Invalid choice, defaulting to "en"'
             lang = 'en'
 
