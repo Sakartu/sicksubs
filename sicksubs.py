@@ -30,6 +30,9 @@ POST_CALL = ''  # '/home/peter/test.sh,/home/peter/test2.sh'
 #***********************************</CONFIG>*********************************
 
 
+quiet = False
+
+
 def sickbeard_run(conn):
     '''
     This function will be called when the script is executed by sickbeard. This
@@ -86,7 +89,8 @@ def cron_run(conn):
                     'longer available on disk!'
 
     if not to_download:
-        print "No subs available for any of your eps yet!"
+        if not quiet:
+            print "No subs available for any of your eps yet!"
         return True
     for d in to_download:
         d.result = download(d)
@@ -148,6 +152,10 @@ def update_tvdbids(sids, tvdbid):
     return sids
 
 if __name__ == '__main__':
+    if '-q' in sys.argv:
+        quiet = True
+        sys.argv.remove('-q')
+
     if len(sys.argv) == 2:
         db_path = sys.argv[2]
     else:
