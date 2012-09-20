@@ -32,15 +32,16 @@ def find_link(name, sublinks):
 
     grp = get_release_group(name)
     (seline, s, e) = get_ep_details(name)
-    s = str(s)
-    e = str(e)
 
     # if not, search for group, season, ep and quality identifier
     for link in sublinks:
         if (grp.lower() in link.lower()
         and get_quality(name) == get_quality(link)):
+            # group and quality match, check for season and ep
+            _, other_s, other_e = get_ep_details(link)
             if seline.lower() in link.lower():
-                # group and quality match, check for season and ep
+                return link
+            elif other_s == s and other_e == e:
                 return link
 
     # return nothing if it can't be found
