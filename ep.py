@@ -1,6 +1,7 @@
 import db
 import nameparser
 
+
 class Ep(object):
     def __init__(self, conn, row):
         self.conn = conn
