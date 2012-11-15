@@ -87,12 +87,12 @@ def cron_run(conn):
                 if os.path.exists(ep_name + '.srt'):
                     # Mabe user downloaded sub for this ep manually?
                     db.remove_single(conn, ep)
-                    print u'Cleaned up db because ' + ep_name + ' already has '
-                    'subs!'
+                    print(u'Cleaned up db because ' + ep_name + ' already has '
+                    'subs!')
                 elif not os.path.exists(ep.final_loc):
                     db.remove_single(conn, ep)
-                    print u'Cleaned up db because ' + ep_name + ' is no '
-                    'longer available on disk!'
+                    print(u'Cleaned up db because ' + ep_name + ' is no '
+                    'longer available on disk!')
 
     if not to_download:
         if not quiet:
