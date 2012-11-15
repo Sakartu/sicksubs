@@ -27,6 +27,12 @@ SUB_LANG = 'en'
 POST_CALL = ''  # '/home/peter/test.sh,/home/peter/test2.sh'
 #POST_CALL = './test.sh'
 
+# if you want the subtitle file to include the language in the file name, set
+# this option to True. This would result in a subtitle of the form:
+#
+# White.Collar.S02E04.DVDRip.XviD-SAiNTS.nl.srt
+APPEND_LANG = False
+
 #***********************************</CONFIG>*********************************
 
 
@@ -132,7 +138,13 @@ def download(ep):
         else:
             subext = '.srt'
         content = resp.read()
-        sub_path = os.path.join(baseloc + subext)
+
+        sub_path = baseloc
+        # Append the langauge if necessary
+        if APPEND_LANG:
+            sub_path += '.' + SUB_LANG
+        sub_path += subext
+
         with open(sub_path, 'w+') as sub:
             sub.write(content)
             os.chown(sub_path, ep_uid, ep_gid)
