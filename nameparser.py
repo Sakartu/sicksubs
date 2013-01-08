@@ -6,7 +6,7 @@ rexes = ['(S(\d\d)E(\d\d))', '((\d{1,2})x(\d{1,2}))', '\D((\d)(\d\d))\D', '\D((\
 hd_quals = ['720p', '1080p', '1080i']
 sd_quals = ['HDTV']
 quals = hd_quals + sd_quals
-video_exts = [u'mkv', u'avi', u'mpg', u'mpeg', u'mp4', u'mov']
+video_exts = [u'mkv', u'avi', u'mp4', u'mpg', u'mpeg', u'mp4', u'mov']
 
 
 def get_ep_details(line):
