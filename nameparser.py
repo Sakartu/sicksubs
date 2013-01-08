@@ -2,7 +2,7 @@ import re
 import os
 
 # regexes are in order of importance
-rexes = ['(S(\d\d)E(\d\d))', '((\d{1,2})x(\d{1,2}))', '\D((\d)(\d\d))\D']
+rexes = ['(S(\d\d)E(\d\d))', '((\d{1,2})x(\d{1,2}))', '\D((\d)(\d\d))\D', '\D((\d\d)(\d\d))\D']
 hd_quals = ['720p', '1080p', '1080i']
 sd_quals = ['HDTV']
 quals = hd_quals + sd_quals
