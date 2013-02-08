@@ -68,7 +68,11 @@ def get_all_eps(conn):
         if rows:
             result = []
             for row in rows:
-                result.append(Ep(conn, row))
+                try:
+                    result.append(Ep(conn, row))
+                except:
+                    print(u'Could not create Ep for "{}"'.format(row))
+
             return result
         else:
             return []
