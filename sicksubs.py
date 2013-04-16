@@ -6,6 +6,7 @@ import time
 import shlex
 import sqlite3
 import urllib2
+import datetime
 import bierdopje
 import subprocess
 import nameparser
@@ -63,7 +64,7 @@ def sickbeard_run(conn):
     interm_loc = sys.argv[2]
     tvdbid = sys.argv[3]
 
-    db.add_ep(conn, interm_loc, final_loc, tvdbid)
+    db.add_ep(conn, datetime.datetime.now(), interm_loc, final_loc, tvdbid)
     cron_run(conn)
 
 
@@ -76,8 +77,13 @@ def cron_run(conn):
     all_eps = db.get_all_eps(conn)
 
     to_download = []
+    now = datetime.datetime.now()
     for ep in all_eps:
         if ep.sid and ep.season and ep.ep:
+            # remove eps that are already in the database for 7 days
+            if now - ep.when > datetime.timedelta(days=7):
+                db.remove_single(conn, ep)
+                continue
             sublinks = bierdopje.get_subs(ep.sid, SUB_LANG, ep.season, ep.ep)
             sub = nameparser.find_link(ep.job_name, sublinks)
             if sub and os.path.exists(ep.final_loc):
