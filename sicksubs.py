@@ -2,6 +2,7 @@
 import db
 import os
 import sys
+import time
 import shlex
 import sqlite3
 import urllib2
@@ -91,6 +92,7 @@ def cron_run(conn):
                 elif not os.path.exists(ep.final_loc):
                     db.remove_single(conn, ep)
                     print(u'Cleaned up db because ' + ep_name + ' is no longer available on disk!')
+            time.sleep(3)
 
     if not to_download:
         if not quiet:
