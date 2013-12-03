@@ -3,9 +3,10 @@ SickSubs Installation
 
 The SickSubs installation consists of three steps:
 
-1. Download and configure SickSubs itself
-2. Add SickSubs to the Sickbeard configuration as post-post-processing script
-3. Add a crontab line for SickSubs
+1. Install periscope
+2. Download and configure SickSubs itself
+3. Add SickSubs to the Sickbeard configuration as post-post-processing script
+4. Add a crontab line for SickSubs
 
 Each of these steps will be described below in detail. Before we proceed,
 however, let's see what setup we assume for this guide:
@@ -15,6 +16,12 @@ however, let's see what setup we assume for this guide:
 downloads the files to a dir from which SickBeard fetches new eps, renames them
 and moves them to another location.
 - Sickbeard runs under it's own user (called sickbeard)
+
+Dependencies
+------------
+
+SickSubs requires periscope installed. Installing (and configuring) periscope is
+described in detail on [periscop's project page](http://code.google.com/p/periscope/).
 
 Download and configure
 ----------------------
@@ -28,18 +35,6 @@ paranoid if you want :)
 ```
 sickbeard@box$ cd /home/sickbeard/bin/
 sickbeard@box$ git clone git://github.com/Sakartu/sicksubs.git
-```
-
-Let's do a little test run to make sure everything is working correctly:
-
-```
-sickbeard@box$ cd /home/sickbeard/bin/sicksubs/
-sickbeard@box$ ./test.py
-.
-----------------------------------------------------------------------
-Ran 1 test in 15.270s
-
-OK
 ```
 
 Now we're ready to configure SickSubs itself. There are really only two
