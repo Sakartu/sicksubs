@@ -6,7 +6,7 @@ SickSubs
 IMPORTANT
 
 At the end of November bierdopje.com stopped offering subtitles. SickSubs has
-since been reprogrammed to use periscope since then, but this requires a clean
+since then been reprogrammed to use periscope, but this requires a clean
 database! So, if you still want to use SickSubs you have to remove your old
 database (usually located at ~/.sicksubs/sicksubs.db) so it can be reinitialized.
 
