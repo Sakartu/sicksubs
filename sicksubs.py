@@ -5,10 +5,8 @@ import sys
 import time
 import shlex
 import sqlite3
-import urllib2
 import periscope
 import subprocess
-import nameparser
 
 #***********************************<CONFIG>***********************************
 # These are parameters that you may want to configure, although the defaults
@@ -40,11 +38,11 @@ quiet = False
 
 
 def sickbeard_run(conn):
-    '''
+    """
     This function will be called when the script is executed by sickbeard. This
     will add a final_location to the correct item in the queue, to make sure
     the subtitle file can be moved there after downloading.
-    '''
+    """
     # It passes 6 parameters to these scripts:
     # 1 final full path to the episode file
     # 2 original name of the episode file
@@ -65,10 +63,10 @@ def sickbeard_run(conn):
 
 
 def cron_run(conn):
-    '''
+    """
     This function will be called when the script is executed by cron. This will
     read the jobs and try to find sub downloads for each of them
-    '''
+    """
     # get all eps
     all_eps = db.get_all_eps(conn)
 

@@ -5,10 +5,10 @@ from ep import Ep
 
 
 def initialize(path):
-    '''
+    """
     This method initializes the next database at the given path. It also sets up
     the tables and returns the created db connection.
-    '''
+    """
     path = os.path.expandvars(os.path.expanduser(path))
     # create the database dir if necessary
     if not os.path.exists(os.path.dirname(path)):
