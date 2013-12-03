@@ -120,7 +120,7 @@ if __name__ == '__main__':
 
     if len(sys.argv) == 7:
         sickbeard_run(conn)
-    if len(sys.argv) == 2:
+    elif len(sys.argv) == 2:
         sys.argv[1] = os.path.abspath(os.path.expanduser(sys.argv[1]))
         sickbeard_run(conn)
     else:
