@@ -20,9 +20,7 @@ works as follows:
    immediately from the db.
 2. Once every x hours (depending on how the crontab is setup) SickSubs will check
    all items in the database and will try to find subs for each of them using the
-   Bierdopje (http://www.bierdopje.com) API. As it knows exactly the show and ep
-   for which to find a subtitle the API load is minimal, but try to keep it that
-   way by not setting your crontab to check for subs every 3 seconds :)
+   [periscope](http://code.google.com/p/periscope/).
 
 SickSubs can be found on github: https://github.com/Sakartu/sicksubs.git
 
