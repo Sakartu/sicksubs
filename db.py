@@ -59,7 +59,7 @@ def get_all_eps(conn):
 def remove_downloaded(conn, downloaded):
     with conn:
         c = conn.cursor()
-        c.executemany(u'''DELETE FROM eps WHERE rowid = ?''', (x.id for x in downloaded))
+        c.executemany(u'''DELETE FROM eps WHERE rowid = ?''', ((int(x.id),) for x in downloaded))
         return True
 
 

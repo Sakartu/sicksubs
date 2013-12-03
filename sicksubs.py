@@ -99,19 +99,13 @@ def cron_run(conn):
 
     # remove successfully downloaded files from db
     db.remove_downloaded(conn, successful)
-    # check if all files are parsed successfully
-    result = all([ep.result for ep in to_download])
     # call post-processing for successfully downloaded files
-    if not POST_CALL:
-        return result
-
-    for d in successful:
-        for script in POST_CALL.split(','):
-            to_call = shlex.split(script)
-            to_call.append(d.final_loc)
-            subprocess.call(to_call)
-    # return result
-    return result
+    if POST_CALL:
+        for d in successful:
+            for script in POST_CALL.split(','):
+                to_call = shlex.split(script)
+                to_call.append(d.final_loc)
+                subprocess.call(to_call)
 
 
 if __name__ == '__main__':
