@@ -14,7 +14,7 @@ def initialize(path):
     if not os.path.exists(os.path.dirname(path)):
         try:
             os.makedirs(os.path.dirname(path))
-        except:
+        except OSError:
             print(sys.argv[0] + ' : Could not create database directory "{0}"!'.format(path))
 
     # then open a connection and setup the tables
@@ -47,7 +47,7 @@ def get_all_eps(conn):
             for row in rows:
                 try:
                     result.append(Ep(conn, row))
-                except:
+                except NameError:
                     print(u'Could not create Ep for "{}"'.format(row))
 
             return result
