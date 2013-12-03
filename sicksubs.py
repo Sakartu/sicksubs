@@ -118,7 +118,10 @@ if __name__ == '__main__':
     else:
         conn = sqlite3.connect(DATABASE_FILE)
 
-    if len(sys.argv) == 7 or len(sys.argv) == 2:
+    if len(sys.argv) == 7:
+        sickbeard_run(conn)
+    if len(sys.argv) == 2:
+        sys.argv[1] = os.path.abspath(os.path.expanduser(sys.argv[1]))
         sickbeard_run(conn)
     else:
         cron_run(conn)
