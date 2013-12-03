@@ -119,15 +119,10 @@ if __name__ == '__main__':
         quiet = True
         sys.argv.remove('-q')
 
-    if len(sys.argv) == 2:
-        db_path = sys.argv[2]
+    if not os.path.exists(DATABASE_FILE):
+        conn = db.initialize(DATABASE_FILE)
     else:
-        db_path = DATABASE_FILE
-
-    if not os.path.exists(db_path):
-        conn = db.initialize(db_path)
-    else:
-        conn = sqlite3.connect(db_path)
+        conn = sqlite3.connect(DATABASE_FILE)
 
     if len(sys.argv) == 7:
         sickbeard_run(conn)
