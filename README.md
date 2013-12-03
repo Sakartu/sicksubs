@@ -2,14 +2,16 @@ SickSubs
 ========
 
 
-********************************IMPORTANT********************************
+```
+IMPORTANT
+
 At the end of November bierdopje.com stopped offering subtitles. SickSubs has
 since been reprogrammed to use periscope since then, but this requires a clean
 database! So, if you still want to use SickSubs you have to remove your old
 database (usually located at ~/.sicksubs/sicksubs.db) so it can be reinitialized.
 
 My apologies for any inconvenience :)
-********************************IMPORTANT********************************
+```
 
 Thank you for downloading SickSubs. This tool fits perfectly in your Sickbeard 
 show-download-chain and helps you download subtitles (either in Dutch
