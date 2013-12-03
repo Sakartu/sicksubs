@@ -37,7 +37,6 @@ def add_ep(conn, final_loc):
         c.execute(u'''INSERT OR REPLACE INTO eps VALUES (?)''', (final_loc,))
 
 
-
 def get_all_eps(conn):
     with conn:
         c = conn.cursor()
