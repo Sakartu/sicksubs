@@ -56,7 +56,7 @@ def sickbeard_run(conn):
     # u'/media/bin2/usenet_downloads/tv/QI.S09E12.HDTV.XviD-FTP/qi.s09e12.
     # hdtv.xvid-ftp.avi',
     # '72716', '9', '12', '2011-11-25']
-    final_loc = sys.argv[1]
+    final_loc = os.path.expanduser(os.path.abspath(sys.argv[1]))
 
     db.add_ep(conn, final_loc)
     cron_run(conn)
@@ -118,10 +118,7 @@ if __name__ == '__main__':
     else:
         conn = sqlite3.connect(DATABASE_FILE)
 
-    if len(sys.argv) == 7:
-        sickbeard_run(conn)
-    elif len(sys.argv) == 2:
-        sys.argv[1] = os.path.abspath(os.path.expanduser(sys.argv[1]))
+    if len(sys.argv) in (2, 7):
         sickbeard_run(conn)
     else:
         cron_run(conn)
