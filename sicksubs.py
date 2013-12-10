@@ -97,6 +97,11 @@ def cron_run(conn):
         if subdl.attemptDownloadSubtitle(to_download[d], [SUB_LANG]) is not None:
             successful.append(d)
 
+    # append languages
+    for s in successful:
+        base, ext = os.path.splitext(s.final_loc)
+        os.rename(s.final_loc, base + '.' + SUB_LANG + ext)
+
     # remove successfully downloaded files from db
     db.remove_downloaded(conn, successful)
     # call post-processing for successfully downloaded files
