@@ -65,6 +65,5 @@ def remove_downloaded(conn, downloaded):
 def remove_single(conn, ep):
     with conn:
         c = conn.cursor()
-        tvdbid = ep.tvdbid
-        c.execute(u'''DELETE FROM eps WHERE tvdbid = ?''', (tvdbid,))
+        c.execute(u'''DELETE FROM eps WHERE rowid = ?''', (ep.id,))
         return True
