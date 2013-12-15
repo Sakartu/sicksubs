@@ -101,7 +101,9 @@ def cron_run(conn):
     if APPEND_LANG:
         for s in successful:
             base, _ = os.path.splitext(s.final_loc)
-            os.rename(base + os.sep + 'srt', os.sep.join((base, SUB_LANG, 'srt')))
+            old_sub = base + os.sep + 'srt'
+            if os.path.isfile(old_sub):
+                os.rename(old_sub, os.sep.join((base, SUB_LANG, 'srt')))
 
     # remove successfully downloaded files from db
     db.remove_downloaded(conn, successful)
