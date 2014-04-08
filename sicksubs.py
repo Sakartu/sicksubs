@@ -71,7 +71,13 @@ def cron_run(conn):
     all_eps = db.get_all_eps(conn)
 
     to_download = {}
-    subdl = periscope.Periscope("cache")
+    try:
+        import xdg.BaseDirectory as bd
+        cache_folder = os.path.join(bd.xdg_config_home, "periscope")
+    except ImportError:
+        cache_folder = os.path.join(os.path.expanduser("~"), ".config", "periscope")
+
+    subdl = periscope.Periscope(cache_folder)
     for ep in all_eps:
         subs = subdl.listSubtitles(ep.final_loc, [SUB_LANG])
 
