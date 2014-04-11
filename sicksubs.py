@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import logging
 import db
 import os
 import sys
@@ -71,6 +72,9 @@ def cron_run(conn):
     all_eps = db.get_all_eps(conn)
 
     to_download = {}
+
+    logging.basicConfig(level=logging.INFO)
+
     try:
         import xdg.BaseDirectory as bd
         cache_folder = os.path.join(bd.xdg_config_home, "periscope")
