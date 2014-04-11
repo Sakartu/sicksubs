@@ -73,7 +73,10 @@ def cron_run(conn):
 
     to_download = {}
 
-    logging.basicConfig(level=logging.INFO)
+    if quiet:
+        logging.basicConfig(level=logging.WARN)
+    else:
+        logging.basicConfig(level=logging.INFO)
 
     try:
         import xdg.BaseDirectory as bd
