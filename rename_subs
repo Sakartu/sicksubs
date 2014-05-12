@@ -15,8 +15,8 @@ else:
 
 files = [os.path.join(os.path.abspath(path), x) for x in os.listdir(path)]
 
-avis = filter(lambda x : x[-4:] in VID_EXTS, files)
-srts = filter(lambda x : x[-4:] in SUB_EXTS, files)
+avis = filter(lambda x: x[-4:] in VID_EXTS, files)
+srts = filter(lambda x: x[-4:] in SUB_EXTS, files)
 
 for avi in avis:
     m = se_rex.search(avi)
