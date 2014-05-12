@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 import logging
+import datetime
+import glob
 import db
 import os
 import sys
@@ -32,6 +34,9 @@ POST_CALL = ''  # '/home/peter/test.sh,/home/peter/test2.sh'
 # White.Collar.S02E04.DVDRip.XviD-SAiNTS.nl.srt
 APPEND_LANG = False
 
+# database entries are cleaned automatically after this number of days of not
+# finding anything
+CLEAN_AFTER = 30
 #***********************************</CONFIG>*********************************
 
 
@@ -59,8 +64,8 @@ def sickbeard_run(conn):
     # '72716', '9', '12', '2011-11-25']
     final_loc = os.path.expanduser(os.path.abspath(sys.argv[1]))
 
-    db.add_ep(conn, final_loc)
-    cron_run(conn)
+    ep = db.add_ep(conn, final_loc, datetime.date.today())
+    return find_subs([ep])
 
 
 def cron_run(conn):
@@ -70,14 +75,15 @@ def cron_run(conn):
     """
     # get all eps
     all_eps = db.get_all_eps(conn)
+    return find_subs(all_eps)
 
+
+def find_subs(eps):
+    """
+    This function searches for available subtitle files in each of the Ep instances
+    in eps, using the periscope subtitle download library.
+    """
     to_download = {}
-
-    if quiet:
-        logging.basicConfig(level=logging.WARN)
-    else:
-        logging.basicConfig(level=logging.INFO)
-
     try:
         import xdg.BaseDirectory as bd
         cache_folder = os.path.join(bd.xdg_config_home, "periscope")
@@ -85,25 +91,35 @@ def cron_run(conn):
         cache_folder = os.path.join(os.path.expanduser("~"), ".config", "periscope")
 
     subdl = periscope.Periscope(cache_folder)
-    for ep in all_eps:
-        subs = subdl.listSubtitles(ep.final_loc, [SUB_LANG])
+    for ep in eps:
+        ep_name = os.path.splitext(os.path.expanduser(ep.final_loc))[0]
+        if not os.path.exists(ep.final_loc):
+            db.remove_single(conn, ep)
+            logging.info(u'Cleaned up db because {0} is no longer available on disk!'.format(ep_name))
+            continue
 
-        if subs and os.path.exists(ep.final_loc):
+        if glob.glob(ep_name + '*.srt'):
+            # Maybe user downloaded sub for this ep manually?
+            db.remove_single(conn, ep)
+            logging.info(u'Cleaned up db because {0} already has subs!'.format(ep_name))
+            continue
+
+        if (datetime.date.today() - ep.added_on).days > CLEAN_AFTER:
+            # Clean this ep as it's too old
+            db.remove_single(conn, ep)
+            logging.info(u'Cleaned up db because {0} is older than {1} days, and there are still no subs!'.format(
+                ep_name, CLEAN_AFTER))
+            continue
+
+        subs = subdl.listSubtitles(ep.final_loc, [SUB_LANG])
+        if subs:
             to_download[ep] = subs
-        else:
-            ep_name = os.path.splitext(os.path.expanduser(ep.final_loc))[0]
-            if os.path.exists(ep_name + '.srt'):
-                # Mabe user downloaded sub for this ep manually?
-                db.remove_single(conn, ep)
-                logging.info(u'Cleaned up db because ' + ep_name + ' already has subs!')
-            elif not os.path.exists(ep.final_loc):
-                db.remove_single(conn, ep)
-                logging.info(u'Cleaned up db because ' + ep_name + ' is no longer available on disk!')
-            time.sleep(3)
+        time.sleep(3)
 
     if not to_download:
         logging.info("No subs available for any of your eps yet!")
-        return True
+        return
+
     successful = []
     for d in to_download:
         if subdl.attemptDownloadSubtitle(to_download[d], [SUB_LANG]) is not None:
@@ -112,7 +128,7 @@ def cron_run(conn):
     # append languages
     if APPEND_LANG:
         for s in successful:
-            base, _ = os.path.splitext(s.final_loc)
+            base = os.path.splitext(s.final_loc)[0]
             old_sub = base + '.srt'
             if os.path.isfile(old_sub):
                 os.rename(old_sub, '.'.join((base, SUB_LANG, 'srt')))
@@ -132,6 +148,11 @@ if __name__ == '__main__':
     if '-q' in sys.argv:
         quiet = True
         sys.argv.remove('-q')
+
+    if quiet:
+        logging.basicConfig(level=logging.ERROR)
+    else:
+        logging.basicConfig(level=logging.INFO)
 
     if not os.path.exists(DATABASE_FILE):
         conn = db.initialize(DATABASE_FILE)
