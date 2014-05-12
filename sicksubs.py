@@ -93,6 +93,7 @@ def find_subs(eps):
     subdl = periscope.Periscope(cache_folder)
     for ep in eps:
         ep_name = os.path.splitext(os.path.expanduser(ep.final_loc))[0]
+        logging.info('Searching subs for {0}'.format(ep_name))
         if not os.path.exists(ep.final_loc):
             db.remove_single(conn, ep)
             logging.info(u'Cleaned up db because {0} is no longer available on disk!'.format(ep_name))
@@ -154,11 +155,9 @@ if __name__ == '__main__':
     else:
         logging.basicConfig(level=logging.INFO)
 
-    if not os.path.exists(DATABASE_FILE):
-        conn = db.initialize(DATABASE_FILE)
-    else:
-        conn = sqlite3.connect(DATABASE_FILE)
+    conn = db.initialize(DATABASE_FILE)
 
+    # two or seven arguments, two included for debugging purposes
     if len(sys.argv) in (2, 7):
         sickbeard_run(conn)
     else:
