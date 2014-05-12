@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 import sqlite3
@@ -15,7 +16,8 @@ def initialize(path):
         try:
             os.makedirs(os.path.dirname(path))
         except OSError:
-            print(sys.argv[0] + ' : Could not create database directory "{0}"!'.format(path))
+            logging.error(sys.argv[0] + ' : Could not create database directory "{0}"!'.format(path))
+            sys.exit(-1)
 
     # then open a connection and setup the tables
     conn = sqlite3.connect(path, detect_types=sqlite3.PARSE_DECLTYPES)
