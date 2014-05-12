@@ -27,5 +27,5 @@ for avi in avis:
         if se.lower() in srt.lower():
             new_name = prefix + se + postfix + srt[-4:]
             if new_name != srt:
-                print srt, "->", new_name
+                print(srt, "->", new_name)
                 os.rename(srt, new_name)

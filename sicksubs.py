@@ -103,7 +103,7 @@ def cron_run(conn):
 
     if not to_download:
         if not quiet:
-            print "No subs available for any of your eps yet!"
+            print("No subs available for any of your eps yet!")
         return True
     successful = []
     for d in to_download:
